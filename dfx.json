@@ -4,6 +4,10 @@
       "main": "chapters/qualification/demo/main.mo",
       "type": "motoko"
     },
+    "qualification": {
+      "main": "chapters/qualification/challenge/main.mo",
+      "type": "motoko"
+    },
     "motivation_letter" : {
       "main": "chapters/qualification/challenge/main.mo",
       "type": "motoko"
