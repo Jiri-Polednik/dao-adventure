@@ -1,34 +1,71 @@
 import Result "mo:base/Result";
 import HashMap "mo:base/HashMap";
 import Types "types";
+import Principal "mo:base/Principal";
+import Iter "mo:base/Iter";
+
+
 actor {
 
     type Member = Types.Member;
     type Result<Ok, Err> = Types.Result<Ok, Err>;
     type HashMap<K, V> = Types.HashMap<K, V>;
 
+    let members = HashMap.HashMap<Principal, Member>(0, Principal.equal, Principal.hash);
+
+
     public shared ({ caller }) func addMember(member : Member) : async Result<(), Text> {
-        return #err("Not implemented");
+        switch (members.get(caller)) {
+            case (null) {
+                members.put(caller, member);
+                return #ok();
+            };
+            case (?member) {
+                return #err("Member already exists");
+            };
+        };
     };
 
     public query func getMember(p : Principal) : async Result<Member, Text> {
-        return #err("Not implemented");
+        return switch (members.get(p)) {
+            case (null) {
+                #err("Member does not exist");
+            };
+            case (?member) {
+                #ok(member);
+            }
+        };
     };
 
     public shared ({ caller }) func updateMember(member : Member) : async Result<(), Text> {
-        return #err("Not implemented");
+        return switch (members.get(caller)) {
+            case (null) {
+                return #err("Member does not exist");
+            };
+            case (?member) {
+                members.put(caller, member);
+                return #ok();
+            };
+        };
     };
 
     public query func getAllMembers() : async [Member] {
-        return [];
+        return Iter.toArray(members.vals());
     };
 
     public query func numberOfMembers() : async Nat {
-        return 0;
+        return members.size();
     };
 
     public shared ({ caller }) func removeMember() : async Result<(), Text> {
-        return #err("Not implemented");
+    switch (members.get(caller)) {
+            case (null) {
+                return #err("Member does not exist");
+            };
+            case (?member) {
+                members.delete(caller);
+                return #ok();
+            };
+        };
     };
-
 };
